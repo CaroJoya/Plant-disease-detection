@@ -1,233 +1,647 @@
-# Plant Disease Detection using CNN
+# 🌿 PlantGuard AI
 
-A deep learning system for automated plant leaf disease classification using Convolutional Neural Networks. Trained on the PlantVillage dataset to classify **38 disease categories** across multiple crop species with **97.8% training accuracy** and **94.99% validation accuracy**.
+### Intelligent Plant Disease Detection Using Deep Learning
 
----
+PlantGuard AI is a deep-learning based image classification application that analyzes plant leaf images and predicts the most likely plant disease class.
 
-## Overview
-
-Plant diseases cause significant crop yield losses globally. Early and accurate identification is critical but traditionally requires trained agronomists. This project implements a CNN-based image classifier that can identify plant leaf diseases from a photograph — enabling real-time, accessible disease diagnosis for farmers and researchers.
-
-The model is deployed as a **Streamlit web application** where users can upload a leaf image and receive an instant disease prediction with confidence score.
+The project combines a **Convolutional Neural Network (CNN)** with a simple **Streamlit web interface**, allowing users to upload a leaf image and receive a prediction with the model's confidence score.
 
 ---
 
-## Dataset
+## ✨ Features
 
-**PlantVillage** — sourced from Kaggle  
-- ~87,000 leaf images  
-- 38 classes (disease + healthy combinations)  
-- 80/20 train/validation split  
-- Training set: **70,295 images**  
-- Validation set: **17,572 images**  
-- Image format: RGB, resized to 128×128  
-
-### Disease Classes (38 total)
-
-| Crop | Conditions |
-|------|-----------|
-| Apple | Apple Scab, Black Rot, Cedar Apple Rust, Healthy |
-| Blueberry | Healthy |
-| Cherry | Powdery Mildew, Healthy |
-| Corn (Maize) | Cercospora Leaf Spot / Gray Leaf Spot, Common Rust, Northern Leaf Blight, Healthy |
-| Grape | Black Rot, Esca (Black Measles), Leaf Blight (Isariopsis), Healthy |
-| Orange | Haunglongbing (Citrus Greening) |
-| Peach | Bacterial Spot, Healthy |
-| Pepper (Bell) | Bacterial Spot, Healthy |
-| Potato | Early Blight, Late Blight, Healthy |
-| Raspberry | Healthy |
-| Soybean | Healthy |
-| Squash | Powdery Mildew |
-| Strawberry | Leaf Scorch, Healthy |
-| Tomato | Bacterial Spot, Early Blight, Late Blight, Leaf Mold, Septoria Leaf Spot, Spider Mites, Target Spot, Yellow Leaf Curl Virus, Mosaic Virus, Healthy |
+- 🌱 **Plant disease classification** from leaf images
+- 🧠 **CNN-based deep learning model**
+- 🔬 Classification across **38 plant/disease categories**
+- 📤 Simple image upload interface
+- ⚡ Fast local prediction
+- 📊 Displays prediction confidence
+- 🖼️ Supports JPG, JPEG, and PNG images
+- 🌿 Clean and responsive Streamlit interface
+- 💾 Pre-trained `.h5` model included
+- 📓 Training and experimentation notebook included
+- 🧩 Modular source-code structure
 
 ---
 
-## Model Architecture
+## 🖥️ Application Preview
 
-A custom Sequential CNN built with TensorFlow/Keras.
+The application provides a clean workflow:
 
-```
-Input (128 × 128 × 3)
-    ↓
-Conv2D(32, 3×3, ReLU, same) → MaxPool(2×2)
-    ↓
-Conv2D(64, 3×3, ReLU, same) → MaxPool(2×2)
-    ↓
-Conv2D(128, 3×3, ReLU, same) → MaxPool(2×2)
-    ↓
-Conv2D(256, 3×3, ReLU, same) → MaxPool(2×2)
-    ↓
-Flatten
-    ↓
-Dense(512, ReLU) → Dropout(0.4)
-    ↓
-Dense(38, Softmax)
+```text
+        🌿 PlantGuard AI
+  Intelligent Plant Disease Detection
+
+              ↓
+
+       📤 Upload Plant Leaf
+
+              ↓
+
+        🔍 Analyze Leaf
+
+              ↓
+
+       ┌───────────────────┐
+       │  Analysis Result  │
+       │                   │
+       │  Plant: Apple     │
+       │  Disease: Black   │
+       │  Rot              │
+       │                   │
+       │  Confidence: 99%  │
+       └───────────────────┘
 ```
 
-**Total parameters:** ~26.3M  
-**Optimizer:** Adam (lr = 0.001)  
-**Loss:** Categorical Cross-Entropy  
+The application also provides model information, supported classes, and basic guidance for obtaining better predictions.
 
 ---
 
-## Training Results
+## 🧠 How It Works
 
-The model was trained for **50 epochs** on Google Colab with GPU acceleration.
+The application follows a straightforward image-classification pipeline:
 
-### Accuracy & Loss at Different Epochs
-
-| Epochs | Train Accuracy | Train Loss | Val Accuracy | Val Loss |
-|--------|---------------|------------|--------------|----------|
-| 10     | 0.65          | 0.35       | 0.62         | 0.46     |
-| 20     | 0.94          | 0.16       | 0.92         | 0.27     |
-| 50     | **0.96**      | **0.09**   | **0.96**     | **0.15** |
-
-### Final Evaluation
-
-| Metric | Score |
-|--------|-------|
-| Training Accuracy | **97.83%** |
-| Validation Accuracy | **94.99%** |
-| Training Loss | 0.0763 |
-| Validation Loss | 0.2495 |
-
-### Per-Class Classification Report (Validation Set)
-
-| Class | Precision | Recall | F1-Score | Support |
-|-------|-----------|--------|----------|---------|
-| Apple — Apple Scab | 1.00 | 0.84 | 0.91 | 504 |
-| Apple — Black Rot | 0.96 | 0.98 | 0.97 | 497 |
-| Apple — Cedar Apple Rust | 0.96 | 0.98 | 0.97 | 440 |
-| Blueberry — Healthy | 0.85 | 0.91 | 0.88 | 505 |
-| Cherry — Powdery Mildew | 1.00 | 0.99 | 0.99 | 456 |
-| Corn — Cercospora / Gray Leaf Spot | 0.56 | 0.85 | 0.67 | 410 |
-| Corn — Common Rust | 1.00 | 0.98 | 0.99 | 477 |
-| Corn — Northern Leaf Blight | 0.90 | 0.28 | 0.24 | 477 |
-| Corn — Healthy | 1.00 | 0.66 | 0.79 | 465 |
-| Grape — Black Rot | 0.90 | 0.97 | 0.37 | 471 |
-| Grape — Esca (Black Measles) | 0.91 | 0.96 | 0.94 | 430 |
-| Grape — Leaf Blight (Isariopsis) | 0.96 | 1.00 | 0.98 | 430 |
-| Grape — Healthy | 0.89 | 0.84 | 0.86 | 423 |
-| Orange — Haunglongbing | 0.93 | 0.89 | 0.60 | 505 |
-| Peach — Bacterial Spot | 0.96 | 0.95 | 0.91 | 405 |
-| Peach — Healthy | 0.54 | 0.99 | 0.96 | 432 |
-| Pepper Bell — Bacterial Spot | 0.97 | 0.95 | 0.91 | 478 |
-| Pepper Bell — Healthy | 0.95 | 0.82 | 0.88 | 497 |
-| Potato — Early Blight | 0.97 | 0.90 | 0.93 | 485 |
-| Potato — Late Blight | 0.30 | 0.98 | 0.95 | 485 |
-| Potato — Healthy | 0.93 | 0.95 | 0.94 | 456 |
-| Strawberry — Healthy | 0.91 | 0.95 | 0.93 | 456 |
-| Soybean — Healthy | 0.95 | 0.95 | 0.95 | 5090 |
-| Squash — Powdery Mildew | 1.00 | 0.99 | 0.99 | 430 |
-
----
-
-## Project Structure
-
+```text
+Leaf Image
+    │
+    ▼
+Image Upload
+    │
+    ▼
+RGB Conversion
+    │
+    ▼
+Resize to 512 × 512
+    │
+    ▼
+CNN Model
+    │
+    ▼
+Class Probabilities
+    │
+    ▼
+Highest-Probability Class
+    │
+    ▼
+Disease / Healthy Result
 ```
+
+### Prediction Process
+
+1. The user uploads a plant leaf image.
+2. The image is converted to RGB format.
+3. The image is resized to **512 × 512 pixels**, matching the trained model's input shape.
+4. The processed image is passed to the CNN.
+5. The model generates probabilities for all supported classes.
+6. The class with the highest probability is selected.
+7. The application displays the predicted plant/disease category and confidence score.
+
+---
+
+## 🛠️ Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| **Python** | Core programming language |
+| **TensorFlow** | Deep learning framework |
+| **Keras** | Neural network/model interface |
+| **NumPy** | Numerical and array operations |
+| **Pillow (PIL)** | Image processing |
+| **Streamlit** | Web application interface |
+| **Jupyter Notebook** | Model experimentation and analysis |
+| **Git & GitHub** | Version control and project hosting |
+
+---
+
+## 📁 Project Structure
+
+```text
 plant-disease-detection/
-├── notebook/
-│   └── plant_disease_detection.ipynb   # Full training pipeline
-├── src/
-│   ├── model.py                         # CNN architecture
-│   ├── preprocess.py                    # Dataset loading & preprocessing
-│   ├── train.py                         # Training script
-│   └── predict.py                       # Single-image inference
+│
 ├── app/
-│   └── app.py                           # Streamlit web app
+│   └── app.py
+│
+├── notebook/
+│   └── plant_disease_detection.ipynb
+│
+├── src/
+│   ├── model.py
+│   ├── preprocess.py
+│   ├── train.py
+│   └── predict.py
+│
+├── saved_model/
+│   └── plant_disease_model.h5
+│
 ├── requirements.txt
+├── README.md
 └── .gitignore
 ```
 
+### Directory Overview
+
+#### `app/`
+Contains the Streamlit application responsible for the user interface and model inference.
+
+#### `notebook/`
+Contains the Jupyter notebook used for experimentation, data analysis, model development, and evaluation.
+
+#### `src/`
+Contains the project's reusable Python modules for model definition, preprocessing, training, and prediction.
+
+#### `saved_model/`
+Contains the trained Keras model used by the Streamlit application.
+
+#### `requirements.txt`
+Contains the Python dependencies required to run the project.
+
 ---
 
-## Setup & Usage
+## 🌱 Supported Classes
+
+The model supports **38 classes** covering multiple crops and their corresponding healthy/disease categories.
+
+### 🍎 Apple
+
+- Apple — Apple Scab
+- Apple — Black Rot
+- Apple — Cedar Apple Rust
+- Apple — Healthy
+
+### 🫐 Blueberry
+
+- Blueberry — Healthy
+
+### 🍒 Cherry
+
+- Cherry — Powdery Mildew
+- Cherry — Healthy
+
+### 🌽 Corn
+
+- Corn — Cercospora Leaf Spot / Gray Leaf Spot
+- Corn — Common Rust
+- Corn — Northern Leaf Blight
+- Corn — Healthy
+
+### 🍇 Grape
+
+- Grape — Black Rot
+- Grape — Esca / Black Measles
+- Grape — Leaf Blight
+- Grape — Healthy
+
+### 🍊 Orange
+
+- Orange — Huanglongbing / Citrus Greening
+
+### 🍑 Peach
+
+- Peach — Bacterial Spot
+- Peach — Healthy
+
+### 🫑 Pepper
+
+- Pepper — Bacterial Spot
+- Pepper — Healthy
+
+### 🥔 Potato
+
+- Potato — Early Blight
+- Potato — Late Blight
+- Potato — Healthy
+
+### 🫐 Raspberry
+
+- Raspberry — Healthy
+
+### 🌱 Soybean
+
+- Soybean — Healthy
+
+### 🎃 Squash
+
+- Squash — Powdery Mildew
+
+### 🍓 Strawberry
+
+- Strawberry — Leaf Scorch
+- Strawberry — Healthy
+
+### 🍅 Tomato
+
+- Tomato — Bacterial Spot
+- Tomato — Early Blight
+- Tomato — Late Blight
+- Tomato — Leaf Mold
+- Tomato — Septoria Leaf Spot
+- Tomato — Spider Mites
+- Tomato — Target Spot
+- Tomato — Yellow Leaf Curl Virus
+- Tomato — Mosaic Virus
+- Tomato — Healthy
+
+---
+
+## ⚙️ Model Details
+
+The application uses a **Convolutional Neural Network (CNN)** for image classification.
+
+### Input
+
+```text
+Image Type : RGB
+Input Size : 512 × 512 × 3
+```
+
+### Output
+
+```text
+Number of Classes : 38
+Output            : Class probabilities
+```
+
+The predicted class is selected using the highest probability produced by the model.
+
+The model is stored as:
+
+```text
+saved_model/plant_disease_model.h5
+```
+
+### Custom Layer Compatibility
+
+The saved model contains a custom `FixedDropout` layer implementation. The Streamlit application defines the corresponding compatibility class and supplies it through Keras `custom_objects` while loading the model.
+
+This allows the saved model to be loaded correctly during inference.
+
+---
+
+## 🚀 Installation
 
 ### 1. Clone the repository
 
 ```bash
 git clone https://github.com/agg-ayush/plant-disease-detection.git
+```
+
+Move into the project directory:
+
+```bash
 cd plant-disease-detection
 ```
 
-### 2. Install dependencies
+---
+
+### 2. Create a virtual environment
+
+It is recommended to use a separate virtual environment for the project.
+
+#### Windows
+
+```bash
+python -m venv plant-env
+```
+
+Activate it:
+
+```bash
+plant-env\Scripts\activate
+```
+
+#### macOS / Linux
+
+```bash
+python3 -m venv plant-env
+```
+
+Activate it:
+
+```bash
+source plant-env/bin/activate
+```
+
+---
+
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Download the dataset
-
-Download the **PlantVillage** dataset from Kaggle:
-
-```bash
-kaggle datasets download -d abdallahalidev/plantvillage-dataset
-unzip plantvillage-dataset.zip -d data/
-```
-
-Ensure the structure is:
-```
-data/
-├── train/
-│   ├── Apple___Apple_scab/
-│   ├── Apple___Black_rot/
-│   └── ...
-└── valid/
-    ├── Apple___Apple_scab/
-    └── ...
-```
-
-### 4. Train the model
-
-```bash
-cd src
-python train.py
-```
-
-Or open and run the Jupyter notebook:
-
-```bash
-jupyter notebook notebook/plant_disease_detection.ipynb
-```
-
-### 5. Run the Streamlit web app
-
-```bash
-streamlit run app/app.py
-```
-
-Navigate to `http://localhost:8501`, upload a leaf image, and click **PREDICT**.
+If TensorFlow is being installed on Windows, make sure the Python version is compatible with the TensorFlow version specified by the project dependencies.
 
 ---
 
-## Methodology
+## ▶️ Running the Application
 
-1. **Data Collection** — PlantVillage dataset (~87K labelled leaf images, 38 classes)
-2. **Preprocessing** — Images resized to 128×128, RGB normalisation, offline augmentation (flip, rotate, brightness, zoom)
-3. **Dataset Split** — 80% train (70,295), 20% validation (17,572)
-4. **Model Design** — 4 Conv2D blocks (32→64→128→256 filters) + dense classifier head
-5. **Training** — Adam optimizer (lr=0.001), categorical cross-entropy, 50 epochs
-6. **Evaluation** — Accuracy, loss, precision, recall, F1-score per class
-7. **Deployment** — Streamlit web application for real-time prediction
+The Streamlit application is located inside the `app` directory.
+
+Move into the application directory:
+
+```bash
+cd app
+```
+
+Then run:
+
+```bash
+python -m streamlit run app.py
+```
+
+On Windows, if you are using a specific virtual environment interpreter:
+
+```bash
+F:\plant-env\Scripts\python.exe -m streamlit run app.py
+```
+
+Streamlit will provide a local URL, normally similar to:
+
+```text
+http://localhost:8501
+```
+
+Open the URL in your browser.
 
 ---
 
-## Technologies
+## 📸 Using the Application
 
-- Python 3.10
-- TensorFlow 2.13 / Keras
-- NumPy, Pandas, Matplotlib, Seaborn
-- scikit-learn
-- Streamlit
-- Jupyter Notebook
+### Step 1 — Upload an image
+
+Click the upload area and select a plant leaf image.
+
+Supported formats:
+
+```text
+.jpg
+.jpeg
+.png
+```
+
+### Step 2 — Preview
+
+The uploaded image will be displayed in the application.
+
+### Step 3 — Analyze
+
+Click:
+
+```text
+🔍 Analyze Leaf
+```
+
+### Step 4 — View the result
+
+The application displays:
+
+- Plant category
+- Predicted disease/healthy class
+- Model confidence
+- Prediction details
+
+Example:
+
+```text
+Analysis Result
+
+Apple
+Black Rot
+
+Model Confidence
+████████████████████ 100.0%
+```
 
 ---
 
-## References
+## 📊 Understanding Confidence
 
-1. Mohanty, S.P., Hughes, D.P., Salathé, M. (2016). Using Deep Learning for Image-Based Plant Disease Detection.
-2. Lu, J., et al. (2017). An In-field Automatic Wheat Disease Diagnosis System.
-3. Tang, Y., et al. (2020). Enhancing Plant Disease Detection through Deep Learning.
-4. Hassan, S.M., et al. (2021). Plant Disease Identification Using Shallow CNN.
-5. Ali, A.A., et al. (2021). Classification of Plant Diseases Using CNNs.
+The displayed confidence is the probability assigned by the model to its selected class.
+
+For example:
+
+```text
+Black Rot
+Confidence: 94.7%
+```
+
+means that the model assigned approximately **94.7% probability to the Black Rot class for that particular input**.
+
+A high model confidence should not automatically be interpreted as guaranteed real-world correctness. Image quality, lighting, background, leaf condition, and similarity to the training data can affect predictions.
+
+---
+
+## 🧪 Model Development
+
+The project includes a Jupyter notebook containing the model-development workflow.
+
+Notebook:
+
+```text
+notebook/plant_disease_detection.ipynb
+```
+
+The notebook can be used to explore:
+
+- Image dataset processing
+- Data preparation
+- CNN model development
+- Model training
+- Validation
+- Performance evaluation
+- Prediction experiments
+
+---
+
+## 🔧 Source Modules
+
+The `src` directory separates important parts of the machine-learning workflow.
+
+### `model.py`
+
+Contains model-related definitions.
+
+### `preprocess.py`
+
+Contains image/data preprocessing functionality.
+
+### `train.py`
+
+Contains training-related functionality.
+
+### `predict.py`
+
+Contains prediction-related functionality.
+
+This separation makes the project easier to understand, maintain, and extend.
+
+---
+
+## 🎨 Streamlit Application
+
+The main application is implemented in:
+
+```text
+app/app.py
+```
+
+The interface includes:
+
+- PlantGuard AI branding
+- Image upload component
+- Image preview
+- Analyze button
+- Prediction result card
+- Confidence progress indicator
+- Model information
+- Supported-class information
+- User guidance for better images
+
+The interface is designed to keep the machine-learning workflow simple enough for a user without requiring them to interact directly with Python or the model.
+
+---
+
+## 📌 Recommended Input Images
+
+For better predictions, use images that:
+
+- Clearly show the plant leaf
+- Have sufficient lighting
+- Have reasonable image quality
+- Keep the leaf visible and relatively large in the frame
+- Avoid excessive blur
+- Avoid heavily obstructed leaves
+
+The model performs image classification and does not replace professional agricultural diagnosis.
+
+---
+
+## ⚠️ Limitations
+
+This project is intended for **educational and experimental purposes**.
+
+Some limitations include:
+
+- Predictions depend on the quality of the input image.
+- The model only recognizes the classes included in its training setup.
+- Unseen diseases may be incorrectly classified as one of the supported classes.
+- Similar-looking symptoms can result in incorrect predictions.
+- Model confidence does not guarantee real-world diagnostic accuracy.
+- Environmental conditions and camera quality can affect image appearance.
+
+For real agricultural decisions, predictions should be verified using appropriate expert or laboratory assessment.
+
+---
+
+## 🔮 Future Improvements
+
+Possible extensions include:
+
+- 📱 Mobile-friendly deployment
+- 📷 Real-time camera-based leaf detection
+- 🌍 Multi-language support
+- 📈 Prediction history and analytics
+- 🗃️ Database integration
+- ☁️ Cloud deployment
+- 🧠 Model architecture improvements
+- 🔍 Explainable AI using techniques such as Grad-CAM
+- 📊 Detailed disease information pages
+- 🌱 Crop-specific recommendations
+- 🔄 Continuous model improvement with additional datasets
+
+---
+
+## 💡 Project Workflow
+
+```text
+                ┌─────────────────────┐
+                │    Leaf Image       │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │   Preprocessing     │
+                │   RGB + Resize      │
+                │    512 × 512        │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │     CNN Model       │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Class Probabilities │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Highest Probability │
+                │       Class         │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Streamlit Result    │
+                │ + Confidence Score  │
+                └─────────────────────┘
+```
+
+---
+
+## 🔐 Privacy
+
+Images uploaded to the application are processed locally when running the project on your own machine.
+
+The application does not require an external image-analysis API or cloud AI service for its core prediction workflow.
+
+---
+
+## 📚 Learning Outcomes
+
+This project demonstrates practical concepts in:
+
+- Machine Learning
+- Deep Learning
+- Convolutional Neural Networks
+- Image Classification
+- Image Preprocessing
+- TensorFlow and Keras
+- Model Inference
+- Python Development
+- Streamlit Application Development
+- Git and GitHub
+- Modular Project Structure
+
+---
+
+## 🏁 Quick Start
+
+For users who already have Python and the required dependencies installed:
+
+```bash
+git clone https://github.com/agg-ayush/plant-disease-detection.git
+cd plant-disease-detection
+pip install -r requirements.txt
+cd app
+python -m streamlit run app.py
+```
+
+Then open the Streamlit URL in your browser, upload a plant leaf image, and click **Analyze Leaf**.
+
+---
+
+## 📄 License
+
+This project is provided for educational and research purposes.
+
+If you reuse or extend the project, review the licenses and usage terms of the datasets, libraries, and model components involved.
+
+---
+
+## 🌿 PlantGuard AI
+
+> **Upload a leaf. Analyze the image. Understand the prediction.**
+
+Built with **Python, TensorFlow, Keras, NumPy, Pillow, and Streamlit**.
