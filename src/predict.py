@@ -1,7 +1,8 @@
+import os
 import numpy as np
 import tensorflow as tf
 
-IMAGE_SIZE = (128, 128)
+IMAGE_SIZE = (512, 512)
 
 CLASS_NAMES = [
     'Apple___Apple_scab', 'Apple___Black_rot', 'Apple___Cedar_apple_rust', 'Apple___healthy',
@@ -23,16 +24,20 @@ CLASS_NAMES = [
 
 
 def load_model(model_path: str) -> tf.keras.Model:
-    return tf.keras.models.load_model(model_path)
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model not found: {model_path}")
+    return tf.keras.models.load_model(model_path, compile=False)
 
 
 def predict_image(model: tf.keras.Model, image_path: str) -> tuple[str, float]:
-    img = tf.keras.preprocessing.image.load_img(image_path, target_size=IMAGE_SIZE)
+    img = tf.keras.preprocessing.image.load_img(
+        image_path, target_size=IMAGE_SIZE, interpolation='bilinear'
+    )
     img_array = tf.keras.preprocessing.image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
 
-    predictions = model.predict(img_array)
-    result_index = np.argmax(predictions[0])
+    predictions = model.predict(img_array, verbose=0)
+    result_index = int(np.argmax(predictions[0]))
     predicted_class = CLASS_NAMES[result_index]
     confidence = float(predictions[0][result_index]) * 100
 

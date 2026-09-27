@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-IMAGE_SIZE = (128, 128)
+IMAGE_SIZE = (512, 512)
 BATCH_SIZE = 32
 NUM_CLASSES = 38
 
